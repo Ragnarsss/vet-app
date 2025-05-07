@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ClientDashboard.css";
-import AppointmentForm from "./AppointmentForm";
 import ClientReservations from "./ClientReservations";
+import ReservationForm from "./ReservationForm";
+import ReservationModal from "./ReservationModal";
 
 const getClienteFromLocalStorage = () => {
   return {
@@ -16,20 +17,15 @@ const getClienteFromLocalStorage = () => {
 
 const ClientDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [clientData, setClientData] = useState(getClienteFromLocalStorage());
+  const [clientData, setClientData] = useState(() =>
+    getClienteFromLocalStorage()
+  );
   const [tempClientData, setTempClientData] = useState(clientData);
   const [isEditing, setIsEditing] = useState(false);
-  const [appointmentData, setAppointmentData] = useState({
-    fecha: "",
-    hora: "",
-    mascota_nombre: "",
-    observaciones: "",
-  });
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isAppointmentModalVisible, setIsAppointmentModalVisible] =
+  const [isReservationModalVisible, setReservationModalVisible] =
     useState(false);
+  const [reservationMessage, setReservationMessage] = useState("");
 
   const handleLogout = () => {
     console.log("Cerrando sesión...");
@@ -46,7 +42,6 @@ const ClientDashboard: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     setTempClientData({ ...tempClientData, [name]: value });
-    setAppointmentData({ ...appointmentData, [name]: value });
   };
 
   const handleSave = () => {
@@ -55,34 +50,7 @@ const ClientDashboard: React.FC = () => {
     console.log("Datos guardados:", tempClientData);
   };
 
-  const handleScheduleAppointment = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !appointmentData.fecha ||
-      !appointmentData.hora ||
-      !appointmentData.mascota_nombre
-    ) {
-      setErrorMessage("Por favor, completa todos los campos obligatorios.");
-      return;
-    }
-
-    console.log("Agendando cita con los datos:", appointmentData);
-
-    setSuccessMessage("¡Cita agendada con éxito!");
-    setErrorMessage("");
-    setAppointmentData({
-      fecha: "",
-      hora: "",
-      mascota_nombre: "",
-      observaciones: "",
-    });
-    setIsAppointmentModalVisible(false);
-  };
-
   const openModal = () => {
-    setErrorMessage("");
-    setSuccessMessage("");
     setIsModalVisible(true);
   };
 
@@ -90,15 +58,8 @@ const ClientDashboard: React.FC = () => {
     setIsModalVisible(false);
   };
 
-  const openAppointmentModal = () => {
-    setErrorMessage("");
-    setSuccessMessage("");
-    setIsAppointmentModalVisible(true);
-  };
-
-  const closeAppointmentModal = () => {
-    setIsAppointmentModalVisible(false);
-  };
+  const openReservationModal = () => setReservationModalVisible(true);
+  const closeReservationModal = () => setReservationModalVisible(false);
 
   useEffect(() => {
     setClientData(getClienteFromLocalStorage());
@@ -180,7 +141,7 @@ const ClientDashboard: React.FC = () => {
         </div>
         <div className="dashboard-card">
           <h2>Agendar Cita</h2>
-          <button className="dashboard-button" onClick={openAppointmentModal}>
+          <button className="dashboard-button" onClick={openReservationModal}>
             Agendar
           </button>
         </div>
@@ -192,30 +153,25 @@ const ClientDashboard: React.FC = () => {
         </div>
       </main>
 
-      {isAppointmentModalVisible && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button
-              className="modal-close-button"
-              onClick={closeAppointmentModal}
-            >
-              &times;
-            </button>
-            <h2>Agendar Cita</h2>
-            {errorMessage && <p className="error">{errorMessage}</p>}
-            {successMessage && <p className="success">{successMessage}</p>}
-            <AppointmentForm
-              onSuccess={(msg) => {
-                setSuccessMessage(msg);
-                setErrorMessage("");
-              }}
-              onError={(msg) => {
-                setErrorMessage(msg);
-                setSuccessMessage("");
-              }}
-              onClose={closeAppointmentModal}
-            />
-          </div>
+      {isReservationModalVisible && (
+        <ReservationModal
+          isOpen={isReservationModalVisible}
+          onClose={closeReservationModal}
+        >
+          <ReservationForm
+            onSuccess={(msg) => {
+              setReservationMessage(msg);
+              closeReservationModal();
+            }}
+            onError={(msg) => setReservationMessage(msg)}
+            onClose={closeReservationModal}
+          />
+        </ReservationModal>
+      )}
+
+      {reservationMessage && (
+        <div className="mt-2">
+          <span>{reservationMessage}</span>
         </div>
       )}
 

@@ -1,5 +1,6 @@
 import React from "react";
-import { useClientReservations } from "./useClientReservations";
+import { useClientReservations } from "./hooks/useClientReservations";
+import { Reservation } from "./types/Reservation.types";
 
 interface ClientReservationsProps {
   isModalVisible: boolean;
@@ -10,9 +11,8 @@ const ClientReservations: React.FC<ClientReservationsProps> = ({
   isModalVisible,
   onClose,
 }) => {
-  const clienteIdStr = localStorage.getItem("cliente_id");
-  const cliente_id = clienteIdStr ? Number(clienteIdStr) : null;
-  const { reservas, loading, error } = useClientReservations(cliente_id);
+  const clientId = localStorage.getItem("cliente_id") || "";
+  const { reservations, loading, error } = useClientReservations(clientId);
 
   if (!isModalVisible) return null;
 
@@ -24,34 +24,41 @@ const ClientReservations: React.FC<ClientReservationsProps> = ({
       </button>
       <h2>Historial de Citas</h2>
       {loading && <p>Cargando...</p>}
-      {error && <p className="error">{error}</p>}
-      {!loading && reservas.length > 0 ? (
+      {error && <div className="error">{error}</div>}
+      {!loading && reservations.length > 0 ? (
         <table className="historial-table">
           <thead>
             <tr>
-              <th>Fecha y Hora</th>
-              <th>Mascota</th>
-              <th>Estado</th>
-              <th>Observaciones</th>
+              <th>Date & Time</th>
+              <th>Pet</th>
+              <th>Veterinarian</th>
+              <th>Status</th>
+              <th>Reason</th>
+              <th>Notes</th>
             </tr>
           </thead>
           <tbody>
-            {reservas.map((cita) => {
-              const fechaHora = new Date(cita.horario);
-              const fechaFormateada = `${fechaHora.toLocaleDateString()} ${fechaHora.getHours()}:00`;
+            {reservations.map((reservation: Reservation) => {
+              const date = new Date(reservation.date_time);
+              const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString(
+                [],
+                { hour: "2-digit", minute: "2-digit" }
+              )}`;
               return (
-                <tr key={cita.id}>
-                  <td>{fechaFormateada}</td>
-                  <td>{cita.mascota_nombre}</td>
-                  <td>{cita.estado}</td>
-                  <td>{cita.observaciones}</td>
+                <tr key={reservation.id}>
+                  <td>{formattedDate}</td>
+                  <td>{reservation.pet?.name || reservation.pet_name}</td>
+                  <td>{reservation.veterinarian?.user?.name || "-"}</td>
+                  <td>{reservation.status}</td>
+                  <td>{reservation.reason || "-"}</td>
+                  <td>{reservation.notes || "-"}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
       ) : (
-        !loading && <p>No hay citas registradas.</p>
+        !loading && <p>No reservations found.</p>
       )}
     </div>
   );
