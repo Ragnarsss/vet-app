@@ -13,9 +13,8 @@ const getClienteFromLocalStorage = () => {
   return {
     name: localStorage.getItem("cliente_nombre") || "",
     email: localStorage.getItem("cliente_email") || "",
-    phone: "",
-    address: "",
-    id: localStorage.getItem("cliente_id") || "",
+    phone: localStorage.getItem("cliente_phone") || "",
+    address: localStorage.getItem("cliente_address") || "",
   };
 };
 

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLoginCliente } from "./useLogin";
+import { useLoginUser } from "./useLogin";
 import { saveClienteToLocalStorage } from "../../utils/localStorageCliente";
 import "./LoginForm.css";
 
@@ -16,7 +16,7 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const { loginCliente, loading, error, success } = useLoginCliente();
+  const { loginUser, loading, error, success } = useLoginUser();
   const {
     register,
     handleSubmit,
@@ -39,19 +39,23 @@ const LoginForm: React.FC = () => {
   const onSubmit = async (data: LoginFormInputs) => {
     console.log("[Login] Datos enviados desde el formulario:", data);
     try {
-      const response = await loginCliente({
+      const response = await loginUser({
         email: data.email,
         password: data.password,
       });
       console.log("[Login] Respuesta exitosa:", response);
+      // Guardar datos en localStorage
       saveClienteToLocalStorage(
         {
-          id: response.cliente.id,
-          nombre: response.cliente.nombre,
-          email: data.email,
+          id: String(response.customer.id),
+          nombre: String(response.user.name),
+          email: response.user.email,
+         phone: response.customer.phone,
+          address: response.customer.address,
         },
-        response.access_token
+        String(response.data.auth_token)
       );
+      // Redirigir según tipo de usuario (puedes personalizar esto)
       navigate("/client");
     } catch (e) {
       console.log("[Login] Error al iniciar sesión:", e);

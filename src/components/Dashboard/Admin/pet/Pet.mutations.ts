@@ -1,5 +1,17 @@
 export const CREATE_PET_MUTATION = `
-  mutation CreatePet($name: String!, $species: String!, $breed: String!, $age: Int!, $customer_id: ID!) {
+  mutation CreatePetInput(
+    $name: String!,
+    $species: String!,
+    $breed: String!,
+    $age: Int!,
+    $customer_id: ID!,
+    $sex: String,
+    $weight: Float,
+    $color: String,
+    $marks: String,
+    $birth_date: String,
+    $notes: String
+  ) {
     createPet(
       input: {
         name: $name
@@ -7,6 +19,12 @@ export const CREATE_PET_MUTATION = `
         breed: $breed
         age: $age
         customer_id: $customer_id
+        sex: $sex
+        weight: $weight
+        color: $color
+        marks: $marks
+        birth_date: $birth_date
+        notes: $notes
       }
     ) {
       id
@@ -14,6 +32,12 @@ export const CREATE_PET_MUTATION = `
       species
       breed
       age
+      sex
+      weight
+      color
+      marks
+      birth_date
+      notes
       customer {
         id
         user {
@@ -39,6 +63,37 @@ export const DELETE_PET_MUTATION = `
     deletePet(id: $id) {
       id
       name
+    }
+  }
+`;
+export const CREATE_SIMPLE_PET_MUTATION = `
+  mutation CreateSimplePet(
+    $name: String!,
+    $species: String!,
+    $breed: String!,
+    $age: Int!,
+    $customer_id: ID!
+  ) {
+    createPet(
+      input: {
+        name: $name
+        species: $species
+        breed: $breed
+        age: $age
+        customer_id: $customer_id
+      }
+    ) {
+      id
+      name
+      species
+      breed
+      age
+      customer {
+        id
+        user {
+          name
+        }
+      }
     }
   }
 `;

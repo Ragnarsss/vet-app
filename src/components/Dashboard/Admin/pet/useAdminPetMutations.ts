@@ -4,6 +4,7 @@ import {
   CREATE_PET_MUTATION,
   UPDATE_PET_MUTATION,
   DELETE_PET_MUTATION,
+  CREATE_SIMPLE_PET_MUTATION
 } from "./Pet.mutations";
 
 export interface Pet {
@@ -13,6 +14,12 @@ export interface Pet {
   breed: string;
   age: number;
   customer_id: string;
+  sex: string;
+  weight?: number;
+  color?: string;
+  marks?: string;
+  birth_date?: string;
+  notes?: string;
 }
 
 export function useAdminPetMutations() {
@@ -23,7 +30,7 @@ export function useAdminPetMutations() {
     setLoading(true);
     setError("");
     try {
-      const data = await client.request<{ createPet: Pet }>(CREATE_PET_MUTATION, input);
+      const data = await client.request<{ createPet: Pet }>(CREATE_SIMPLE_PET_MUTATION, input);
       return data.createPet;
     } catch (e) {
       setError("Error al crear mascota");

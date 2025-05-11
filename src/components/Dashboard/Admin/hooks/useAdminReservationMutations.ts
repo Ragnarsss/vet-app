@@ -26,7 +26,7 @@ export function useAdminReservationMutations() {
     setLoading(true);
     setError("");
     try {
-      const data = await client.request(CREATE_RESERVATION_MUTATION, input);
+      const data = await client.request<{ createReservation: any }>(CREATE_RESERVATION_MUTATION, input);
       return data.createReservation;
     } catch (e) {
       setError("Error al crear reserva");
@@ -40,7 +40,7 @@ export function useAdminReservationMutations() {
     setLoading(true);
     setError("");
     try {
-      const data = await client.request(UPDATE_RESERVATION_MUTATION, { id, ...input });
+      const data = await client.request<{ updateReservation: any }>(UPDATE_RESERVATION_MUTATION, { id, ...input });
       return data.updateReservation;
     } catch (e) {
       setError("Error al actualizar reserva");
@@ -54,7 +54,7 @@ export function useAdminReservationMutations() {
     setLoading(true);
     setError("");
     try {
-      const data = await client.request(DELETE_RESERVATION_MUTATION, { id });
+      const data = await client.request<{ deleteReservation: any }>(DELETE_RESERVATION_MUTATION, { id });
       return data.deleteReservation;
     } catch (e) {
       setError("Error al eliminar reserva");
