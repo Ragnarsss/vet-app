@@ -6,8 +6,7 @@ export interface Service {
   id: string;
   name: string;
   description: string;
-  price: number;
-  category: string; // Si los servicios tienen categorías
+  price: number; // Si los servicios tienen categorías
 }
 
 interface ServicesResponse {

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
-import { client } from "../../../../graphql/graphqlClient";
-import { PRODUCTOS_QUERY } from "../../../../graphql/queries/product.queries";
+import { client } from "../../../../graphqlClient";
+import { PRODUCTOS_QUERY } from "../queries/product.queries";
 
 export interface Producto {
   id: string;
