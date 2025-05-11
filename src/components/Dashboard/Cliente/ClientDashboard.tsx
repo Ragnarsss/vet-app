@@ -4,6 +4,10 @@ import "./ClientDashboard.css";
 import ClientReservations from "./ClientReservations";
 import ReservationForm from "./ReservationForm";
 import ReservationModal from "./ReservationModal";
+import ProductCatalog from "./ProductCatalog";
+import ServiceCatalog from "./ServiceCatalog";
+import PetManager from "./PetManager";
+import ReservationHistory from "./ReservationHistory";
 
 const getClienteFromLocalStorage = () => {
   return {
