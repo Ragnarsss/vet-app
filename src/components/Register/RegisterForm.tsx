@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRegisterCliente } from "./useRegister";
+import { useRegisterUser  } from "./useRegister";
 import "./RegisterForm.css";
 
 const registerSchema = z
@@ -25,9 +25,10 @@ const registerSchema = z
 
 type RegisterFormInputs = z.infer<typeof registerSchema>;
 
+
 const RegisterForm: React.FC = () => {
   const navigate = useNavigate();
-  const { registerCliente, loading, error, success } = useRegisterCliente();
+  const { registerUser, loading, error, success } = useRegisterUser();
   const {
     register,
     handleSubmit,
@@ -38,28 +39,24 @@ const RegisterForm: React.FC = () => {
   });
 
   const onSubmit = async (data: RegisterFormInputs) => {
-    console.log("[Register] Datos enviados desde el formulario:", data);
     try {
-      console.log("[Register] Llamando a registerCliente con:", {
-        nombre: `${data.firstName} ${data.lastName}`,
+      await registerUser({
+        name: `${data.firstName} ${data.lastName}`,
         email: data.email,
         password: data.password,
-        telefono: data.telefono,
-        direccion: data.direccion,
+        phone: data.telefono,
+        address: data.direccion,
       });
-      const response = await registerCliente({
-        nombre: `${data.firstName} ${data.lastName}`,
-        email: data.email,
-        password: data.password,
-        telefono: data.telefono,
-        direccion: data.direccion,
-      });
-      console.log("[Register] Respuesta exitosa:", response);
+      alert("¡Registro exitoso! Ahora puedes iniciar sesión.");
       setTimeout(() => {
         navigate("/");
       }, 2000);
-    } catch (e) {
-      console.log("[Register] Error al registrar:", e);
+    } catch (e: any) {
+      if (e.response && e.response.errors && e.response.errors.length > 0) {
+        alert("Error: " + e.response.errors[0].message);
+      } else {
+        alert("Error al registrar usuario. Por favor revisa los datos o intenta más tarde.");
+      }
     }
   };
 

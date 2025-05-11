@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { client } from "../../graphqlClient";
-import { LOGIN_MUTATION } from "./Login.mutations";
+import { LOGIN_USER_MUTATION } from "./Login.mutations";
 
 interface LoginVariables {
   email: string;
@@ -8,32 +8,41 @@ interface LoginVariables {
 }
 
 interface LoginResponse {
-  loginCliente: {
-    access_token: string;
-    expires_in: number;
-    cliente: {
+  loginUser: {
+    message: string;
+    user: {
       id: string;
-      nombre: string;
+      name: string;
+      email: string;
+    };
+    customer: {
+      id: string;
+      phone: string;
+      address: string;
+    };
+    data: {
+      auth_token: string;
+      refresh_token: string;
     };
   };
 }
 
-export function useLoginCliente() {
+export function useLoginUser() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const loginCliente = async (variables: LoginVariables) => {
+  const loginUser = async (variables: LoginVariables) => {
     setLoading(true);
     setError("");
     setSuccess("");
     try {
       const response = await client.request<LoginResponse>(
-        LOGIN_MUTATION,
+        LOGIN_USER_MUTATION,
         variables
       );
       setSuccess("Login exitoso");
-      return response.loginCliente;
+      return response.loginUser;
     } catch (err: any) {
       setError("Error al iniciar sesión");
       throw err;
@@ -42,5 +51,5 @@ export function useLoginCliente() {
     }
   };
 
-  return { loginCliente, loading, error, success };
+  return { loginUser, loading, error, success };
 }

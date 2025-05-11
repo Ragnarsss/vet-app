@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { client } from "../../../../graphqlClient";
 import { PRODUCTOS_QUERY } from "../queries/product.queries";

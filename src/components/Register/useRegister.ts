@@ -1,49 +1,54 @@
 import { useState } from "react";
 import { client } from "../../graphqlClient";
-import { REGISTER_MUTATION } from "./Register.mutations";
+import { REGISTER_USER_MUTATION } from "./Register.mutations";
 
-interface RegisterVariables {
-  nombre: string;
+export type RegisterVariables = {
+  name: string;
   email: string;
   password: string;
-  telefono: string;
-  direccion: string;
-}
+  phone: string;
+  address: string; // Added the missing 'address' property
+};
 
 interface RegisterResponse {
-  registerCliente: {
-    access_token: string;
-    expires_in: number;
-    cliente: {
+  registerUser: {
+    id: string;
+    phone: string;
+    address: string;
+    user: {
       id: string;
-      nombre: string;
+      name: string;
+      email: string;
     };
+    reservations: Array<{ id: string; date_time: string }>;
+    pets: Array<{ id: string; name: string }>;
+    careOrders: Array<{ id: string; status: string; total: number }>;
   };
 }
 
-export function useRegisterCliente() {
+export function useRegisterUser() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const registerCliente = async (variables: RegisterVariables) => {
+  const registerUser = async (variables: RegisterVariables) => {
     setLoading(true);
     setError("");
     setSuccess("");
     try {
       const response = await client.request<RegisterResponse>(
-        REGISTER_MUTATION,
+        REGISTER_USER_MUTATION,
         variables
       );
-      setSuccess("Cliente registrado correctamente");
-      return response.registerCliente;
+      setSuccess("Usuario registrado correctamente");
+      return response.registerUser;
     } catch (err: any) {
-      setError("Error al registrar cliente");
+      setError("Error al registrar usuario");
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  return { registerCliente, loading, error, success };
+  return { registerUser, loading, error, success };
 }

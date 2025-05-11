@@ -1,13 +1,13 @@
 import React, { useState } from "react";
+import { useProductos } from "./hooks/useProduct";
 
 const ProductCatalog: React.FC = () => {
   const [filter, setFilter] = useState("");
-  const products = [
-    { id: 1, name: "Producto 1", description: "Descripción del producto 1", price: 1000 },
-    { id: 2, name: "Producto 2", description: "Descripción del producto 2", price: 2000 },
-    { id: 3, name: "Producto 3", description: "Descripción del producto 3", price: 3990 },
-  ];
-  const filteredProducts = products.filter(
+  const { productos, loading, error } = useProductos();
+
+  if (loading) return <div>Cargando productos...</div>;
+
+  const filteredProducts = productos.filter(
     (product) =>
       product.name.toLowerCase().includes(filter.toLowerCase()) ||
       product.description.toLowerCase().includes(filter.toLowerCase())
@@ -25,7 +25,7 @@ const ProductCatalog: React.FC = () => {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>id</th>
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Precio</th>

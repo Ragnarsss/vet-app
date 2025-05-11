@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+import { useService } from "./hooks/useService";
 
 const ServiceCatalog: React.FC = () => {
   const [filter, setFilter] = useState("");
-  const services = [
-    { id: 1, name: "Servicio 1", description: "Descripción del servicio 1", price: 1000 },
-    { id: 2, name: "Servicio 2", description: "Descripción del servicio 2", price: 2000 },
-    { id: 3, name: "Servicio 3", description: "Descripción del servicio 3", price: 3990 },
-  ];
+  const { services, loading, error } = useService();
+
+  if (loading) return <div>Cargando servicios...</div>;
+  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>;
+  
   const filteredServices = services.filter(
     (service) =>
       service.name.toLowerCase().includes(filter.toLowerCase()) ||
@@ -25,7 +26,7 @@ const ServiceCatalog: React.FC = () => {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Id</th>
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Precio</th>
@@ -34,7 +35,7 @@ const ServiceCatalog: React.FC = () => {
         <tbody>
           {filteredServices.map((service) => (
             <tr key={service.id}>
-              <td>{service.id}</td>
+              <td>{service.id}</td>1
               <td>{service.name}</td>
               <td>{service.description}</td>
               <td>${service.price}</td>
