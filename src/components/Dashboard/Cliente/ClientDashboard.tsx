@@ -4,6 +4,8 @@ import "./ClientDashboard.css";
 import ClientReservations from "./ClientReservations";
 import ReservationForm from "./ReservationForm";
 import ReservationModal from "./ReservationModal";
+import PetManager from "./PetManager";
+import ReservationHistory from "./ReservationHistory";
 
 const getClienteFromLocalStorage = () => {
   return {
@@ -26,11 +28,6 @@ const ClientDashboard: React.FC = () => {
   const [isReservationModalVisible, setReservationModalVisible] =
     useState(false);
   const [reservationMessage, setReservationMessage] = useState("");
-
-  const handleLogout = () => {
-    console.log("Cerrando sesión...");
-    navigate("/");
-  };
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
@@ -77,6 +74,8 @@ const ClientDashboard: React.FC = () => {
         </button>
       </header>
       <main className="dashboard-main">
+        <PetManager />
+        <ReservationHistory />
         <div className="dashboard-card">
           <h2>Perfil del Cliente</h2>
           {isEditing ? (

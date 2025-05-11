@@ -3,7 +3,8 @@ import { client } from "../../../../graphqlClient";
 import { GET_CLIENT_RESERVATIONS_QUERY } from "../queries/ClientReservations.queries";
 import { Reservation } from "../types/Reservation.types";
 
-export function useClientReservations(clientId: string) {
+export function useClientReservations() {
+  const clientId = localStorage.getItem("cliente_id") || "";
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,7 +28,7 @@ export function useClientReservations(clientId: string) {
         setLoading(false);
       }
     };
-    fetchReservations();
+    if (clientId) fetchReservations();
   }, [clientId]);
 
   return { reservations, loading, error };

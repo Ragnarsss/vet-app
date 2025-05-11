@@ -33,7 +33,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
   onClose,
 }) => {
   const clientId = localStorage.getItem("cliente_id") || "";
-  const { pets, loading: petsLoading } = useClientPets(clientId);
+  const { pets, loading: petsLoading } = useClientPets();
   const { veterinarians, loading: vetsLoading } = useVeterinarians();
   const { createReservation, loading, error, success } = useCreateReservation();
   const {
