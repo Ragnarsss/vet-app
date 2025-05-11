@@ -16,12 +16,9 @@ export function useUpdateReservationStatus() {
     setError("");
     setSuccess("");
     try {
-      await client.request({
-        query: UPDATE_RESERVATION_STATUS,
-        variables: { id, status },
-      });
+      await client.request(UPDATE_RESERVATION_STATUS, { id, status });
       setSuccess("Estado actualizado correctamente");
-    } catch (err) {
+    } catch {
       setError("Error al actualizar estado");
     } finally {
       setLoading(false);

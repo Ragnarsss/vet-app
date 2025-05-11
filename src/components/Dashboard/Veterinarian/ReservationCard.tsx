@@ -1,9 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useReservationById } from "./hooks/useReservationById";
 import { useUpdateReservationStatus } from "./hooks/useUpdateReservationStatus";
-import { useCareOrderDialog } from "./hooks/useCareOrderDialog";
 
 interface ReservationCardProps {
   reservationId: string;

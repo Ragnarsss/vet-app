@@ -54,7 +54,7 @@ export function useClientPets() {
         { customer_id }
       );
       setPets(data.customer?.pets || []);
-    } catch (err: unknown) {
+    } catch {
       setError("Error al cargar mascotas. Mostrando datos de ejemplo.");
       setPets(MOCK_PETS);
     } finally {

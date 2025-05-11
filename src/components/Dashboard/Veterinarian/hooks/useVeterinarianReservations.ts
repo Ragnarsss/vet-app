@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { client } from "../../../../graphqlClient";
 import { Reservation } from "../types";
-import { RESERVATIONS_BY_VETERINARIAN } from "../queries";
+import { RESERVATIONS_BY_VETERINARIAN } from "./reservationsByVeterinarian.query";
 
 export function useVeterinarianReservations() {
   const veterinarianId = localStorage.getItem("veterinario_id") || "";
@@ -15,13 +15,12 @@ export function useVeterinarianReservations() {
     setError("");
     setSuccess("");
     try {
-      const data = await client.request({
-        query: RESERVATIONS_BY_VETERINARIAN,
-        variables: { veterinarianId },
-      });
-      setReservations(data.reservationsByVeterinarian as Reservation[]);
+      const data = await client.request<{
+        reservationsByVeterinarian: Reservation[];
+      }>(RESERVATIONS_BY_VETERINARIAN, { veterinarianId });
+      setReservations(data.reservationsByVeterinarian);
       setSuccess("Reservas cargadas correctamente");
-    } catch (err) {
+    } catch {
       setError("Error al cargar reservas");
     } finally {
       setLoading(false);

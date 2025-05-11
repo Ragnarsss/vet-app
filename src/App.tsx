@@ -3,7 +3,7 @@ import AdminDashboard from "./components/Dashboard/Admin/AdminDashboard";
 import ClientDashboard from "./components/Dashboard/Cliente/ClientDashboard";
 import LoginForm from "./components/Login/LoginForm";
 import RegisterForm from "./components/Register/RegisterForm";
-import VeterinarianDashboard from "./components/Dashboard/Veterinario/VeterinarianDashboard";
+import VeterinarianDashboard from "./components/Dashboard/Veterinarian/VeterinarianDashboard";
 
 function App() {
   return (
