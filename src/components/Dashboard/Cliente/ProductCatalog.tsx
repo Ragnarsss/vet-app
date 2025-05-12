@@ -11,8 +11,8 @@ const ProductCatalog: React.FC = () => {
   const filteredProducts = productos?.filter(
     (product) =>
       product.name?.toLowerCase().includes(filter.toLowerCase()) ||
-      product.description?.toLowerCase().includes(filter.toLowerCase())
-  ) || [];
+    product.description?.toLowerCase().includes(filter.toLowerCase())
+  );
 
   return (
     <div className="table-container">
