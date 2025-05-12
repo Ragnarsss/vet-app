@@ -71,18 +71,18 @@ const LoginForm: React.FC = () => {
         password: data.password,
       });
       console.log("[Login] Respuesta exitosa:", response);
-      // Guardar datos en localStorage
+      // Accede correctamente a los datos anidados en loginUser
+      const { customer, user, data: authData } = response.loginUser;
       saveClienteToLocalStorage(
         {
-          id: String(response.customer.id),
-          nombre: String(response.user.name),
-          email: response.user.email,
-          phone: response.customer.phone,
-          address: response.customer.address,
+          id: String(customer.id),
+          nombre: String(user.name),
+          email: user.email,
+          phone: customer.phone,
+          address: customer.address,
         },
-        String(response.data.auth_token)
+        String(authData.auth_token)
       );
-      // Redirigir según tipo de usuario (puedes personalizar esto)
       navigate("/client");
     } catch (e) {
       console.log("[Login] Error al iniciar sesión:", e);
