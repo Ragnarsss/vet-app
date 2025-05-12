@@ -1,26 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useClientData } from "../../../hooks/useClientData";
 import "./ClientDashboard.css";
 import ClientReservations from "./ClientReservations";
-import ReservationForm from "./ReservationForm";
-import ReservationModal from "./ReservationModal";
-import ProductCatalog from "./ProductCatalog";
-import ServiceCatalog from "./ServiceCatalog";
 import PetManager from "./PetManager";
+import ProductCatalog from "./ProductCatalog";
+import ReservationForm from "./ReservationForm";
 import ReservationHistory from "./ReservationHistory";
-
-const getClienteFromLocalStorage = () => {
-  return {
-    name: localStorage.getItem("cliente_nombre") || "",
-    email: localStorage.getItem("cliente_email") || "",
-    phone: localStorage.getItem("cliente_phone") || "",
-    address: localStorage.getItem("cliente_address") || "",
-  };
-};
+import ReservationModal from "./ReservationModal";
+import ServiceCatalog from "./ServiceCatalog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const ClientDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [clientData, setClientData] = useState(getClienteFromLocalStorage());
+  const clientData = useClientData();
   const [tempClientData, setTempClientData] = useState(clientData);
   const [isEditing, setIsEditing] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -43,9 +39,8 @@ const ClientDashboard: React.FC = () => {
   };
 
   const handleSave = () => {
-    setClientData(tempClientData);
-    setIsEditing(false);
     console.log("Datos guardados:", tempClientData);
+    setIsEditing(false);
   };
 
   const openModal = () => {
@@ -66,108 +61,149 @@ const ClientDashboard: React.FC = () => {
   const closeServiceModal = () => setIsServiceModalVisible(false);
 
   useEffect(() => {
-    setClientData(getClienteFromLocalStorage());
-  }, []);
+    setTempClientData(clientData);
+  }, [clientData]);
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <div className="header-logo-title">
-          <img src="/assets/Logo.png" alt="Logo" className="logo" />
-          <h1>Clinica Capa 8</h1>
+    <div className="dashboard-container max-w-4xl mx-auto py-8 px-2">
+      <header className="dashboard-header flex items-center justify-between mb-8">
+        <div className="header-logo-title flex items-center gap-4">
+          <img src="/assets/Logo.png" alt="Logo" className="logo w-14 h-14" />
+          <h1 className="text-2xl font-bold text-blue-800">Clinica Capa 8</h1>
         </div>
-        <button className="logout-button" onClick={() => navigate("/")}>
+        <Button variant="outline" onClick={() => navigate("/")}>
           Cerrar Sesión
-        </button>
+        </Button>
       </header>
-      <main className="dashboard-main">
-        <PetManager />
-        <ReservationHistory />
-        <div className="dashboard-card">
-          <h2>Perfil del Cliente</h2>
-          {isEditing ? (
-            <div>
-              <label>
-                Nombre:
-                <input
-                  type="text"
-                  name="name"
-                  value={tempClientData.name}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Correo:
-                <p className="readonly-field">{tempClientData.email}</p>
-              </label>
-              <label>
-                Teléfono:
-                <input
-                  type="text"
-                  name="phone"
-                  value={tempClientData.phone}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Dirección:
-                <input
-                  type="text"
-                  name="address"
-                  value={tempClientData.address}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <button className="dashboard-button" onClick={handleSave}>
-                Guardar
-              </button>
-              <button className="dashboard-button" onClick={handleEditToggle}>
-                Cancelar
-              </button>
-            </div>
-          ) : (
-            <div>
-              <p>
-                <strong>Nombre:</strong> {clientData.name}
-              </p>
-              <p>
-                <strong>Correo:</strong> {clientData.email}
-              </p>
-              <p>
-                <strong>Teléfono:</strong> {clientData.phone}
-              </p>
-              <p>
-                <strong>Dirección:</strong> {clientData.address}
-              </p>
-              <button className="dashboard-button" onClick={handleEditToggle}>
-                Editar
-              </button>
-            </div>
-          )}
+      <main className="dashboard-main grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="h-fit">
+            <CardHeader>
+              <CardTitle>Perfil del Cliente</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isEditing ? (
+                <form className="space-y-3">
+                  <div>
+                    <Label htmlFor="name">Nombre</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={tempClientData.name}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Correo</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      value={tempClientData.email}
+                      disabled
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">Teléfono</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      value={tempClientData.phone}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="address">Dirección</Label>
+                    <Input
+                      id="address"
+                      name="address"
+                      value={tempClientData.address}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <Button
+                      type="button"
+                      onClick={handleSave}
+                      className="w-full"
+                    >
+                      Guardar
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleEditToggle}
+                      className="w-full"
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </form>
+              ) : (
+                <div className="space-y-2">
+                  <p>
+                    <strong>Nombre:</strong> {clientData.name}
+                  </p>
+                  <p>
+                    <strong>Correo:</strong> {clientData.email}
+                  </p>
+                  <p>
+                    <strong>Teléfono:</strong> {clientData.phone}
+                  </p>
+                  <p>
+                    <strong>Dirección:</strong> {clientData.address}
+                  </p>
+                  <Button
+                    variant="outline"
+                    onClick={handleEditToggle}
+                    className="mt-2 w-full"
+                  >
+                    Editar
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          <PetManager />
         </div>
-        <div className="dashboard-card">
-          <h2>Agendar Cita</h2>
-          <button className="dashboard-button" onClick={openReservationModal}>
-            Agendar
-          </button>
-        </div>
-        <div className="dashboard-card">
-          <h2>Historial de Citas</h2>
-          <button className="dashboard-button" onClick={openModal}>
-            Ver Historial
-          </button>
-        </div>
-        <div className="dashboard-card">
-          <h2>Catálogo de Productos</h2>
-          <button className="dashboard-button" onClick={openCatalogModal}>
-            Ver Catálogo
-          </button>
-        </div>
-        <div className="dashboard-card">
-          <h2>Catálogo de Servicios</h2>
-          <button className="dashboard-button" onClick={openServiceModal}>
-            Ver Servicios
-          </button>
+        <div className="flex flex-col gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Agendar Cita</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full" onClick={openReservationModal}>
+                Agendar
+              </Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Historial de Citas</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ReservationHistory />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Catálogo de Productos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full" onClick={openCatalogModal}>
+                Ver Catálogo
+              </Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Catálogo de Servicios</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full" onClick={openServiceModal}>
+                Ver Servicios
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </main>
 

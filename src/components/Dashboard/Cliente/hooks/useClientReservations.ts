@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { client } from "../../../../graphqlClient";
-import { GET_CLIENT_RESERVATIONS_QUERY } from "../queries/ClientReservations.queries";
+import { RESERVATIONS_BY_CUSTOMER_QUERY } from "../../Admin/queries/Reservation.queries";
 import { Reservation } from "../types/Reservation.types";
 
 export function useClientReservations() {
-  const clientId = localStorage.getItem("cliente_id") || "";
+  const customer_id = localStorage.getItem("cliente_id") || "";
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,21 +15,17 @@ export function useClientReservations() {
       setError("");
       try {
         const data = await client.request<{
-          clientReservations: Reservation[];
-        }>(GET_CLIENT_RESERVATIONS_QUERY, { clientId });
-        setReservations(data.clientReservations);
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message || "Error fetching reservations");
-        } else {
-          setError("Error fetching reservations");
-        }
+          reservationsByCustomer: Reservation[];
+        }>(RESERVATIONS_BY_CUSTOMER_QUERY, { customer_id });
+        setReservations(data.reservationsByCustomer);
+      } catch {
+        setError("Error al cargar reservas");
       } finally {
         setLoading(false);
       }
     };
-    if (clientId) fetchReservations();
-  }, [clientId]);
+    if (customer_id) fetchReservations();
+  }, [customer_id]);
 
   return { reservations, loading, error };
 }

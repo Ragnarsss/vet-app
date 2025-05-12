@@ -102,13 +102,24 @@ const PetFormModal: React.FC<PetFormModalProps> = ({
 
   const onSubmit = async (data: Omit<Pet, "id">) => {
     try {
+      const formattedData = {
+        ...data,
+        age: data.age ? parseInt(data.age as unknown as string, 10) : undefined, // Convertir age a número
+        weight: data.weight
+          ? parseFloat(data.weight as unknown as string)
+          : undefined, // Convertir weight a número
+        birth_date: data.birth_date ? data.birth_date.split("T")[0] : undefined, // Convertir birth_date a formato YYYY-MM-DD
+        customer_id,
+      };
+
       if (editingPet) {
-        await updatePet(editingPet.id!, data);
+        await updatePet(editingPet.id!, formattedData);
       } else {
-        await createPet({ ...data, customer_id });
+        await createPet(formattedData);
       }
       closeModal();
-    } catch {
+    } catch (e) {
+      console.error("Error al guardar mascota", e);
       setFormError(
         "Ocurrió un error al guardar los datos. Por favor, inténtalo de nuevo."
       );
@@ -215,8 +226,9 @@ const PetFormModal: React.FC<PetFormModalProps> = ({
               <Label htmlFor="weight">Peso</Label>
               <Input
                 id="weight"
-                type="number"
-                {...register("weight")}
+                type="float"
+                step="0.01"
+                {...register("weight", { valueAsNumber: true })}
                 placeholder="Peso"
                 disabled={isSubmitting}
               />

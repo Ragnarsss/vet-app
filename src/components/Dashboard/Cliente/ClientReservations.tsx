@@ -11,8 +11,7 @@ const ClientReservations: React.FC<ClientReservationsProps> = ({
   isModalVisible,
   onClose,
 }) => {
-  const clientId = localStorage.getItem("cliente_id") || "";
-  const { reservations, loading, error } = useClientReservations(clientId);
+  const { reservations, loading, error } = useClientReservations();
 
   if (!isModalVisible) return null;
 

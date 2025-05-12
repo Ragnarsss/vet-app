@@ -20,12 +20,15 @@ export function useCreateReservation() {
     setError("");
     setSuccess("");
     try {
+      // Obtener el customer_id del localStorage si no viene en input
+      const customerId =
+        input.customer_id || localStorage.getItem("cliente_id") || "";
       const variables = {
         date_time: input.date_time,
         pet_id: input.pet_id,
         pet_name: input.pet_name,
         notes: input.notes || null,
-        customer_id: input.customer_id,
+        customer_id: customerId,
         veterinarian_id: input.veterinarian_id,
         reason: input.reason,
         status: input.status,

@@ -3,41 +3,10 @@ import { client } from "../../../../graphqlClient";
 import { Pet } from "@/types/Pet";
 import {
   GET_PETS_BY_CUSTOMER,
-  CREATE_PET,
   UPDATE_PET,
   DELETE_PET,
 } from "../queries/Pet.queries";
-
-const MOCK_PETS: Pet[] = [
-  {
-    id: "1",
-    name: "Firulais",
-    species: "Perro",
-    breed: "Labrador",
-    age: 3,
-    sex: "Macho",
-    weight: 25,
-    color: "Negro",
-    marks: "Mancha blanca en el pecho",
-    customer_id: "mock",
-    birth_date: "2020-01-01",
-    notes: "Muy juguetón",
-  },
-  {
-    id: "2",
-    name: "Mishi",
-    species: "Gato",
-    breed: "Siames",
-    age: 2,
-    sex: "Hembra",
-    weight: 4,
-    color: "Gris",
-    marks: "Cola corta",
-    customer_id: "mock",
-    birth_date: "2021-05-10",
-    notes: "Le gusta dormir mucho",
-  },
-];
+import { CREATE_PET_MUTATION } from "../mutations/Pet.mutations";
 
 export function useClientPets() {
   const customer_id = localStorage.getItem("cliente_id") || "";
@@ -48,15 +17,18 @@ export function useClientPets() {
   const fetchPets = async () => {
     setLoading(true);
     setError(null);
+    console.log("[useClientPets] fetchPets: customer_id", customer_id);
     try {
       const data = await client.request<{ customer: { pets: Pet[] } }>(
         GET_PETS_BY_CUSTOMER,
         { customer_id }
       );
+      console.log("[useClientPets] fetchPets: data", data);
       setPets(data.customer?.pets || []);
-    } catch {
-      setError("Error al cargar mascotas. Mostrando datos de ejemplo.");
-      setPets(MOCK_PETS);
+    } catch (err) {
+      console.error("[useClientPets] fetchPets: error", err);
+      setError("Error al cargar mascotas.");
+      setPets([]);
     } finally {
       setLoading(false);
     }
@@ -74,15 +46,19 @@ export function useClientPets() {
   const createPet = async (input: Omit<Pet, "id">) => {
     setLoading(true);
     setError(null);
+    console.log("[useClientPets] createPet: input", input);
     try {
       const variables = { input: { ...input, customer_id } };
+      console.log("[useClientPets] createPet: variables", variables);
       const data = await client.request<{ createPet: Pet }>(
-        CREATE_PET,
+        CREATE_PET_MUTATION,
         variables
       );
-      setPets((prev) => [...prev, data.createPet]);
+      console.log("[useClientPets] createPet: response", data);
+      await fetchPets();
       return data.createPet;
     } catch (err: unknown) {
+      console.error("[useClientPets] createPet: error", err);
       setError("Error al crear mascota");
       throw err;
     } finally {
