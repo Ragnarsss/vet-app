@@ -6,11 +6,12 @@ import AdminReservationsPanel from "./AdminReservationsPanel";
 import AdminReservationManager from "./AdminReservationManager";
 import AdminCartView from "./AdminCartView";
 import AdminAddToCartModal from "./AdminAddToCartModal";
+import AdminVeterinarianRegister from "./veterinarian/AdminVeterinarianRegister";
 import "./AdminDashboard.css";
 
 const AdminDashboard: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
-  const [activeModal, setActiveModal] = useState<null | 'services' | 'products' | 'pets' | 'reservations' | 'reservationManager' | 'addToCart'>(null);
+  const [activeModal, setActiveModal] = useState<null | 'services' | 'products' | 'pets' | 'reservations' | 'reservationManager' | 'addToCart' | 'registerVeterinarian'>(null);
 
   return (
     <div className="admin-dashboard-bg">
@@ -47,6 +48,9 @@ const AdminDashboard: React.FC = () => {
             <button className="admin-btn" onClick={() => setActiveModal('addToCart')}>
               Agregar productos o servicios al carrito
             </button>
+            <button className="admin-btn" onClick={() => setActiveModal('registerVeterinarian')}>
+              Registrar Veterinario
+            </button>
           </div>
           {showCart && (
             <div className="admin-panel-section" style={{ maxWidth: 520, margin: '24px auto 0 auto' }}>
@@ -70,6 +74,14 @@ const AdminDashboard: React.FC = () => {
           )}
           {activeModal === 'addToCart' && (
             <AdminAddToCartModal onClose={() => setActiveModal(null)} />
+          )}
+          {activeModal === 'registerVeterinarian' && (
+            <div className="modal-bg">
+              <div className="modal-content">
+                <button className="admin-btn" style={{float:'right'}} onClick={()=>setActiveModal(null)}>&times;</button>
+                <AdminVeterinarianRegister />
+              </div>
+            </div>
           )}
         </div>
       </div>
