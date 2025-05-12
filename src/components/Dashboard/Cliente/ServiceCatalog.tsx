@@ -26,7 +26,6 @@ const ServiceCatalog: React.FC = () => {
       <table>
         <thead>
           <tr>
-            <th>Id</th>
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Precio</th>
@@ -35,7 +34,7 @@ const ServiceCatalog: React.FC = () => {
         <tbody>
           {filteredServices.map((service) => (
             <tr key={service.id}>
-              <td>{service.id}</td>1
+          
               <td>{service.name}</td>
               <td>{service.description}</td>
               <td>${service.price}</td>

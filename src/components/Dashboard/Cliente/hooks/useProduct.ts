@@ -10,7 +10,7 @@ export interface Producto {
 }
 
 interface ProductosResponse {
-  productos: Producto[];
+  products: Producto[];
 }
 
 export function useProductos() {
@@ -23,7 +23,7 @@ export function useProductos() {
     setError("");
     client
       .request<ProductosResponse>(PRODUCTOS_QUERY)
-      .then((data) => setProductos(data.productos))
+      .then((data) => setProductos(data.products))
       .catch(() => setError("Error al cargar productos"))
       .finally(() => setLoading(false));
   }, []);
