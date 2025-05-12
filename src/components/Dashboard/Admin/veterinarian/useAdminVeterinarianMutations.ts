@@ -4,7 +4,7 @@ import { CREATE_VETERINARIAN_MUTATION } from "./Veterinarian.mutations";
 import { CREATE_USER_MUTATION } from "./User.mutations";
 
 export interface VeterinarianInput {
-  user: string; // user debe ser el id del usuario creado
+  user_id: string; // user debe ser el id del usuario creado
   phone?: string;
   availability?: string[];
 }
@@ -27,7 +27,7 @@ export function useAdminVeterinarianMutations() {
     }
   };
 
-  const createVeterinarian = async (input: { user: string; phone?: string; availability?: string[] }) => {
+  const createVeterinarian = async (input: { user_id: string; phone?: string; availability?: string[] }) => {
     setLoading(true);
     setError("");
     try {
