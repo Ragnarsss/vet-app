@@ -16,7 +16,6 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/client" element={<ClientDashboard />} />
           <Route path="/veterinarian" element={<VeterinarianDashboard />} />
-          {/* Puedes agregar más rutas aquí */}
         </Routes>
       </Router>
     </VeterinarianAuthProvider>

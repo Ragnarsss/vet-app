@@ -1,6 +1,4 @@
-import { gql } from "graphql-request";
-
-export const GET_SERVICES = gql`
+export const GET_SERVICES = `
   query AllServices {
     services {
       id

@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLoginVeterinarian } from "./useLoginVeterinarian";
 
 const loginSchema = z.object({
   email: z.string().email("Correo inválido"),
@@ -32,7 +31,6 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const vetAuth = useVeterinarianAuth();
   const { loginUser, loading, error, success } = useLoginUser();
-  const { loginVeterinarian } = useLoginVeterinarian();
   const {
     register,
     handleSubmit,
@@ -48,15 +46,12 @@ const LoginForm: React.FC = () => {
   });
 
   const handleVetLogin = async (data: VetLoginFormInputs) => {
-      const response = await loginVeterinarian({ email: data.email, password: data.password }) as { loginVeterinarian?: { data?: { auth_token?: string } } };
-      // La respuesta es { loginVeterinarian: { ... } }
-      const vetData = response?.loginVeterinarian;
-      if (vetData && vetData.data && vetData.data.auth_token) {
-        // Aquí puedes guardar el token y datos del veterinario si lo deseas
-        // Por ejemplo: saveVeterinarianToLocalStorage(vetData, vetData.data.auth_token);
-        navigate("/veterinarian");
-      }
-    };
+    await vetAuth.login(data.email, data.password);
+    // Redirige solo si no hay error y hay sesión activa
+    if (!vetAuth.error && vetAuth.veterinarian && vetAuth.authData) {
+      navigate("/veterinarian");
+    }
+  };
 
   // Modal y recuperación de contraseña (sin cambios)
   const [isForgotPasswordVisible, setIsForgotPasswordVisible] =
@@ -76,18 +71,18 @@ const LoginForm: React.FC = () => {
         password: data.password,
       });
       console.log("[Login] Respuesta exitosa:", response);
-      // Accede correctamente a los datos anidados en loginUser
-      const { customer, user, data: authData } = response.loginUser;
+      // Guardar datos en localStorage
       saveClienteToLocalStorage(
         {
-          id: String(customer.id),
-          nombre: String(user.name),
-          email: user.email,
-          phone: customer.phone,
-          address: customer.address,
+          id: String(response.customer.id),
+          nombre: String(response.user.name),
+          email: response.user.email,
+          phone: response.customer.phone,
+          address: response.customer.address,
         },
-        String(authData.auth_token)
+        String(response.data.auth_token)
       );
+      // Redirigir según tipo de usuario (puedes personalizar esto)
       navigate("/client");
     } catch (e) {
       console.log("[Login] Error al iniciar sesión:", e);

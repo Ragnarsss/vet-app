@@ -1,3 +1,7 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useClientData } from "../../../hooks/useClientData";
@@ -9,10 +13,6 @@ import ReservationForm from "./ReservationForm";
 import ReservationHistory from "./ReservationHistory";
 import ReservationModal from "./ReservationModal";
 import ServiceCatalog from "./ServiceCatalog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 const ClientDashboard: React.FC = () => {
   const navigate = useNavigate();

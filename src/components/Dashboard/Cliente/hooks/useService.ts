@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { client } from "../../../../graphqlClient";
 import { GET_SERVICES } from "../queries/service.queries";
-
-export interface Service {
-  id: string;
-  name: string;
-  description: string;
-  price: number; // Si los servicios tienen categorías
-}
+import { Service } from "@/types/Service";
 
 interface ServicesResponse {
   services: Service[];
