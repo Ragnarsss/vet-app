@@ -1,15 +1,11 @@
 export const LOGIN_VETERINARIAN_MUTATION = `
-  mutation LoginVeterinarian($input: LoginVeterinarianInput!) {
-    loginVeterinarian(input: $input) {
+  mutation LoginVeterinarian($email: String!, $password: String!) {
+    loginVeterinarian(input: { email: $email, password: $password }) {
       message
       user {
         id
         name
         email
-      }
-      veterinarian {
-        id
-        phone
       }
       data {
         auth_token

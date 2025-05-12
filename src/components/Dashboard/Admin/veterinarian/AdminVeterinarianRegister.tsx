@@ -64,7 +64,7 @@ const AdminVeterinarianRegister: React.FC = () => {
         <label>
           Disponibilidad (elige los días):
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
-            {["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"].map((dia) => (
+            {["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"].map((dia) => (
               <label key={dia} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <input
                   type="checkbox"

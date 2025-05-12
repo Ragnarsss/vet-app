@@ -19,19 +19,18 @@ export const VeterinarianAuthProvider = ({
     setLoading(true);
     setError("");
     try {
-      const variables = { input: { email, password } };
+      const variables = { email, password };
       const data = (await client.request(
         LOGIN_VETERINARIAN_MUTATION,
         variables
       )) as {
         loginVeterinarian: {
-          veterinarian: Veterinarian;
           user: any;
           data: VeterinarianAuthData;
         };
       };
       setVeterinarian({
-        ...data.loginVeterinarian.veterinarian,
+        id: data.loginVeterinarian.user.id,
         user: data.loginVeterinarian.user,
       });
       setAuthData(data.loginVeterinarian.data);

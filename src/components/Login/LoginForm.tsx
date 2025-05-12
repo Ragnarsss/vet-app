@@ -64,25 +64,23 @@ const LoginForm: React.FC = () => {
   const [modalError, setModalError] = React.useState("");
 
   const onSubmit = async (data: LoginFormInputs) => {
-    console.log("[Login] Datos enviados desde el formulario:", data);
     try {
       const response = await loginUser({
         email: data.email,
         password: data.password,
       });
-      console.log("[Login] Respuesta exitosa:", response);
       // Guardar datos en localStorage
       saveClienteToLocalStorage(
         {
-          id: String(response.customer.id),
-          nombre: String(response.user.name),
-          email: response.user.email,
-          phone: response.customer.phone,
-          address: response.customer.address,
+          id: String(response.loginUser.customer.id),
+          nombre: String(response.loginUser.user.name),
+          email: response.loginUser.user.email,
+          phone: response.loginUser.customer.phone,
+          address: response.loginUser.customer.address,
         },
-        String(response.data.auth_token)
+        String(response.loginUser.data.auth_token)
       );
-      // Redirigir según tipo de usuario (puedes personalizar esto)
+      // Redirigir a dashboard de cliente
       navigate("/client");
     } catch (e) {
       console.log("[Login] Error al iniciar sesión:", e);

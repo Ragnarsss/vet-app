@@ -1,5 +1,5 @@
 export const GET_RESERVATIONS = `
-  query ReservationsByVeterinarian($veterinarian_id: ID!) {
+  query ReservationsByVeterinarian($veterinarian_id: String!) {
     reservationsByVeterinarian(veterinarian_id: $veterinarian_id) {
       id
       date_time
@@ -21,7 +21,7 @@ export const GET_RESERVATIONS = `
 `;
 
 export const UPDATE_RESERVATION_STATUS = `
-  mutation UpdateReservationStatus($id: ID!, $status: ReservationStatus!) {
+  mutation UpdateReservationStatus($id: String!, $status: ReservationStatus!) {
     updateReservationStatus(id: $id, status: $status) {
       id
       status
@@ -30,7 +30,7 @@ export const UPDATE_RESERVATION_STATUS = `
 `;
 
 export const COMPLETE_ORDER = `
-  mutation CompleteOrder($reservationId: ID!, $products: [ProductOrderInput!], $service_ids: [ID!]) {
+  mutation CompleteOrder($reservationId: String!, $products: [ProductOrderInput!], $service_ids: [ID!]) {
     completeOrder(reservationId: $reservationId, products: $products, service_ids: $service_ids) {
       id
       status
