@@ -1,10 +1,22 @@
 export const GET_VETERINARIANS_QUERY = `
-  query Veterinarians {
+  query AllVeterinarians {
     veterinarians {
       id
       phone
-      availability
-      user { id name }
+      user {
+        id
+        name
+        email
+      }
+      reservations {
+        id
+        date_time
+      }
+      careOrders {
+        id
+        status
+        total
+      }
     }
   }
 `;

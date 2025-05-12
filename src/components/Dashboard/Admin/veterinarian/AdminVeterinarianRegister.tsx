@@ -1,65 +1,60 @@
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert } from "@/components/ui/alert";
-import { useAdminVeterinarianMutations } from "./useAdminVeterinarianMutations";
+import { useCreateVeterinarian } from "./useCreateVeterinarian";
 
 const vetSchema = z.object({
   name: z.string().min(1, "El nombre es obligatorio"),
   email: z.string().email("Email inválido"),
   password: z.string().min(6, "Mínimo 6 caracteres"),
   phone: z.string().optional(),
-  availability: z.array(z.string()).min(1, "Selecciona al menos un día"),
 });
 
 type VetFormInputs = z.infer<typeof vetSchema>;
 
-const DIAS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
-
 const AdminVeterinarianRegister: React.FC = () => {
-  const { createUser, createVeterinarian, loading, error } =
-    useAdminVeterinarianMutations();
+  const { registerVeterinarian, loading, error } = useCreateVeterinarian();
   const [result, setResult] = useState<any>(null);
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-    reset,
-  } = useForm<VetFormInputs>({
+  const form = useForm<VetFormInputs>({
     resolver: zodResolver(vetSchema),
-    defaultValues: { availability: [] },
+    defaultValues: { name: "", email: "", password: "", phone: "" },
   });
 
-  const onSubmit = async (form: VetFormInputs) => {
+  const onSubmit = async (data: VetFormInputs) => {
     setResult(null);
-    const userRes = await createUser({
-      name: form.name,
-      email: form.email,
-      password: form.password,
-    });
-    if (!userRes || !userRes.id) {
-      setResult({ error: "Error al crear usuario" });
-      return;
-    }
-    const vetInput = {
-      user_id: userRes.id,
-      phone: form.phone,
-      availability: form.availability,
-    };
-    const res = await createVeterinarian(vetInput);
-    setResult(res);
-    reset();
-  };
+    console.log(
+      "[AdminVeterinarianRegister] Iniciando registro de veterinario",
+      data
+    );
 
-  const selectedAvailability = watch("availability");
+    // Usando el hook unificado que maneja todo el proceso
+    const res = await registerVeterinarian({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      phone: data.phone,
+    });
+
+    console.log("[AdminVeterinarianRegister] Resultado del registro:", res);
+    setResult(res);
+
+    if (res) {
+      form.reset();
+    }
+  };
 
   return (
     <Card className="max-w-md mx-auto mt-8">
@@ -67,97 +62,75 @@ const AdminVeterinarianRegister: React.FC = () => {
         <CardTitle>Registrar Veterinario</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Nombre</Label>
-            <Input id="name" {...register("name")} disabled={loading} />
-            {errors.name && (
-              <span className="text-xs text-red-500">
-                {errors.name.message}
-              </span>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              {...register("email")}
-              disabled={loading}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={loading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.email && (
-              <span className="text-xs text-red-500">
-                {errors.email.message}
-              </span>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="password">Contraseña</Label>
-            <Input
-              id="password"
-              type="password"
-              {...register("password")}
-              disabled={loading}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} disabled={loading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.password && (
-              <span className="text-xs text-red-500">
-                {errors.password.message}
-              </span>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contraseña</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} disabled={loading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Teléfono</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={loading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Registrando..." : "Registrar Veterinario"}
+            </Button>
+            {error && (
+              <Alert variant="destructive" className="mt-2">
+                {error}
+              </Alert>
             )}
-          </div>
-          <div>
-            <Label htmlFor="phone">Teléfono</Label>
-            <Input id="phone" {...register("phone")} disabled={loading} />
-            {errors.phone && (
-              <span className="text-xs text-red-500">
-                {errors.phone.message}
-              </span>
+            {result && !error && (
+              <Alert variant="default" className="mt-2">
+                ¡Veterinario registrado!
+              </Alert>
             )}
-          </div>
-          <div>
-            <Label>Disponibilidad (elige los días)</Label>
-            <div className="flex flex-wrap gap-3 mt-2">
-              {DIAS.map((dia) => (
-                <label key={dia} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    value={dia}
-                    checked={selectedAvailability.includes(dia)}
-                    onChange={(e) => {
-                      const checked = e.target.checked;
-                      setValue(
-                        "availability",
-                        checked
-                          ? [...selectedAvailability, dia]
-                          : selectedAvailability.filter((d) => d !== dia)
-                      );
-                    }}
-                    disabled={loading}
-                  />
-                  {dia}
-                </label>
-              ))}
-            </div>
-            {errors.availability && (
-              <span className="text-xs text-red-500">
-                {errors.availability.message as string}
-              </span>
-            )}
-          </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Registrando..." : "Registrar Veterinario"}
-          </Button>
-          {error && (
-            <Alert variant="destructive" className="mt-2">
-              {error}
-            </Alert>
-          )}
-          {result && !error && (
-            <Alert variant="success" className="mt-2">
-              ¡Veterinario registrado!
-            </Alert>
-          )}
-        </form>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );

@@ -4,7 +4,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateReservation } from "./hooks/useCreateReservation";
 import { useClientPets } from "./hooks/useClientPets";
-import { useVeterinarians } from "./hooks/useVeterinarians";
 import { useService } from "./hooks/useService";
 import { useServiceSelection } from "./hooks/useServiceSelection";
 import { Alert } from "@/components/ui/alert";
@@ -12,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useVeterinarians } from "@/hooks/useVeterinarians";
+import { Veterinarian } from "@/types/Veterinarian";
 
 const reservationSchema = z.object({
   date_time: z.string().min(1, "La fecha y hora son obligatorias"),
@@ -110,9 +111,9 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
             disabled={loading || vetsLoading}
           >
             <option value="">Selecciona un veterinario</option>
-            {veterinarians.map((vet) => (
+            {veterinarians.map((vet: Veterinarian) => (
               <option key={vet.id} value={vet.id}>
-                {vet.user.name}
+                {vet.user?.name || "Nombre no disponible"}
               </option>
             ))}
           </select>

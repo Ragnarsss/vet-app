@@ -8,17 +8,23 @@ import {
   UPDATE_RESERVATION_STATUS,
 } from "./veterinarian.queries";
 
-export function useVeterinarianReservations(veterinarianId: string) {
+export function useVeterinarianReservations(veterinarianId?: string) {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // Obtener el id del veterinario desde localStorage si no se pasa como argumento
+  const vetId = veterinarianId || localStorage.getItem("vet_id") || undefined;
 
   const fetchReservations = async () => {
+    if (!vetId) {
+      setError("No se encontró el id del veterinario");
+      return;
+    }
     setLoading(true);
     setError("");
     try {
       const data = (await client.request(GET_RESERVATIONS, {
-        veterinarian_id: veterinarianId,
+        veterinarian_id: vetId,
       })) as { reservationsByVeterinarian: Reservation[] };
       setReservations(data.reservationsByVeterinarian);
     } catch {
@@ -66,9 +72,9 @@ export function useVeterinarianReservations(veterinarianId: string) {
   };
 
   useEffect(() => {
-    if (veterinarianId) fetchReservations();
+    if (vetId) fetchReservations();
     // eslint-disable-next-line
-  }, [veterinarianId]);
+  }, [vetId]);
 
   return {
     reservations,

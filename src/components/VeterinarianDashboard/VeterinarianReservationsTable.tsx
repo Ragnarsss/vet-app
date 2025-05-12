@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableHeader,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Reservation } from "../../types/Reservation";
+import ReservationDetailsDialog from "./ReservationDetailsDialog";
 
 interface Props {
   reservations: Reservation[];
@@ -25,6 +26,20 @@ const VeterinarianReservationsTable: React.FC<Props> = ({
   error,
   onStatusChange,
 }) => {
+  const [selectedReservation, setSelectedReservation] =
+    useState<Reservation | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleOpenDialog = (reservation: Reservation) => {
+    setSelectedReservation(reservation);
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedReservation(null);
+    setDialogOpen(false);
+  };
+
   return (
     <>
       {error && <div className="error">{error}</div>}
@@ -55,6 +70,14 @@ const VeterinarianReservationsTable: React.FC<Props> = ({
                 <TableCell>{res.notes}</TableCell>
                 <TableCell>{res.status}</TableCell>
                 <TableCell>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="ml-1"
+                    onClick={() => handleOpenDialog(res)}
+                  >
+                    Ver detalles
+                  </Button>
                   {statusOptions.map(
                     (opt) =>
                       opt !== res.status && (
@@ -75,6 +98,13 @@ const VeterinarianReservationsTable: React.FC<Props> = ({
           )}
         </TableBody>
       </Table>
+      {selectedReservation && (
+        <ReservationDetailsDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          reservation={selectedReservation}
+        />
+      )}
     </>
   );
 };

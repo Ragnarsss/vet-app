@@ -79,3 +79,36 @@ export const GET_PRODUCTS = `
     }
   }
 `;
+
+export const GET_CARE_ORDERS = `
+  query CareOrdersByVeterinarian($veterinarian_id: String!) {
+    careOrdersByVeterinarian(veterinarian_id: $veterinarian_id) {
+      id
+      status
+      total
+      created_at
+      products {
+        id
+        name
+        price
+      }
+      reservation {
+        id
+        date_time
+        status
+      }
+      customer {
+        id
+        user {
+          name
+        }
+      }
+      veterinarian {
+        id
+        user {
+          name
+        }
+      }
+    }
+  }
+`;

@@ -1,4 +1,9 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useVeterinarianAuth } from "@/context/useVeterinarianAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -7,11 +12,6 @@ import { z } from "zod";
 import { saveClienteToLocalStorage } from "../../utils/localStorageCliente";
 import "./LoginForm.css";
 import { useLoginUser } from "./useLogin";
-import { useVeterinarianAuth } from "@/context/useVeterinarianAuth";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const loginSchema = z.object({
   email: z.string().email("Correo inválido"),
@@ -46,10 +46,13 @@ const LoginForm: React.FC = () => {
   });
 
   const handleVetLogin = async (data: VetLoginFormInputs) => {
-    await vetAuth.login(data.email, data.password);
-    // Redirige solo si no hay error y hay sesión activa
-    if (!vetAuth.error && vetAuth.veterinarian && vetAuth.authData) {
-      navigate("/veterinarian");
+    try {
+      await vetAuth.login(data.email, data.password);
+      if (!vetAuth.error) {
+        navigate("/veterinarian");
+      }
+    } catch (err) {
+      // Puedes mostrar un mensaje de error si lo deseas
     }
   };
 

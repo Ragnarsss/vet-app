@@ -1,24 +1,43 @@
 import React, { useState } from "react";
 import { useAdminProductMutations, Product } from "./useAdminProductMutations";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const AdminProductManager: React.FC = () => {
-  const { createProduct, updateProduct, deleteProduct, loading, error } = useAdminProductMutations();
-  const [form, setForm] = useState<Omit<Product, "id">>({ name: "", description: "", price: 0 });
+  const { createProduct, updateProduct, deleteProduct, loading, error } =
+    useAdminProductMutations();
+  const [form, setForm] = useState<Omit<Product, "id">>({
+    name: "",
+    description: "",
+    price: 0,
+  });
   const [productId, setProductId] = useState("");
   const [result, setResult] = useState<any>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleCreate = async () => {
-    const res = await createProduct({ name: form.name, description: form.description, price: Number(form.price) });
+    const res = await createProduct({
+      name: form.name,
+      description: form.description,
+      price: Number(form.price),
+    });
     setResult(res);
   };
 
   const handleUpdate = async () => {
     if (!productId) return;
-    const res = await updateProduct(productId, { name: form.name, description: form.description, price: Number(form.price) });
+    const res = await updateProduct(productId, {
+      name: form.name,
+      description: form.description,
+      price: Number(form.price),
+    });
     setResult(res);
   };
 
@@ -29,34 +48,96 @@ const AdminProductManager: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Gestión de Productos</h2>
-      <form style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: 350, margin: '0 auto' }}>
-        <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          Nombre del producto:
-          <input name="name" placeholder="Ej: Antiparasitario" value={form.name} onChange={handleChange} style={{ width: '100%', marginTop: 4 }} />
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          Descripción:
-          <textarea name="description" placeholder="Ej: Tabletas para desparasitar perros" value={form.description} onChange={handleChange} style={{ width: '100%', marginTop: 4 }} />
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          Precio:
-          <input name="price" type="number" placeholder="Ej: 5000" value={form.price} onChange={handleChange} style={{ width: '100%', marginTop: 4 }} />
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          ID (para editar/eliminar):
-          <input name="productId" placeholder="Ej: 1" value={productId} onChange={e => setProductId(e.target.value)} style={{ width: '100%', marginTop: 4 }} />
-        </label>
-        <div style={{ display: 'flex', gap: '12px', margin: '18px 0', justifyContent: 'center' }}>
-          <button type="button" onClick={handleCreate} disabled={loading} style={{ background: '#43a047', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 18px', fontWeight: 500 }}>Crear</button>
-          <button type="button" onClick={handleUpdate} disabled={loading} style={{ background: '#1976d2', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 18px', fontWeight: 500 }}>Actualizar</button>
-          <button type="button" onClick={handleDelete} disabled={loading} style={{ background: '#d32f2f', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 18px', fontWeight: 500 }}>Eliminar</button>
-        </div>
-      </form>
-      {error && <div style={{color: 'red', marginTop: 10}}>{error}</div>}
-      {result && <pre style={{marginTop: 10}}>{JSON.stringify(result, null, 2)}</pre>}
-    </div>
+    <Card className="max-w-md mx-auto shadow-lg border border-blue-100">
+      <CardHeader>
+        <CardTitle className="text-lg">Gestión de Productos</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form className="flex flex-col gap-4">
+          <div>
+            <label className="block mb-1 font-medium text-blue-900">
+              Nombre del producto
+            </label>
+            <Input
+              name="name"
+              placeholder="Ej: Antiparasitario"
+              value={form.name}
+              onChange={handleChange}
+              className="rounded-lg border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium text-blue-900">
+              Descripción
+            </label>
+            <Textarea
+              name="description"
+              placeholder="Ej: Tabletas para desparasitar perros"
+              value={form.description}
+              onChange={handleChange}
+              className="rounded-lg border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium text-blue-900">
+              Precio
+            </label>
+            <Input
+              name="price"
+              type="number"
+              placeholder="Ej: 5000"
+              value={form.price}
+              onChange={handleChange}
+              className="rounded-lg border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium text-blue-900">
+              ID (para editar/eliminar)
+            </label>
+            <Input
+              name="productId"
+              placeholder="Ej: 1"
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+              className="rounded-lg border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            />
+          </div>
+          <div className="flex gap-3 mt-2 justify-end">
+            <Button
+              type="button"
+              onClick={handleCreate}
+              disabled={loading}
+              variant="default"
+            >
+              Crear
+            </Button>
+            <Button
+              type="button"
+              onClick={handleUpdate}
+              disabled={loading}
+              variant="secondary"
+            >
+              Actualizar
+            </Button>
+            <Button
+              type="button"
+              onClick={handleDelete}
+              disabled={loading}
+              variant="destructive"
+            >
+              Eliminar
+            </Button>
+          </div>
+        </form>
+        {error && <div className="text-red-500 mt-2">{error}</div>}
+        {result && (
+          <pre className="mt-2 bg-gray-50 rounded p-2 text-xs">
+            {JSON.stringify(result, null, 2)}
+          </pre>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

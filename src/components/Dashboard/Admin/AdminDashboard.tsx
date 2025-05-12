@@ -7,83 +7,189 @@ import AdminReservationManager from "./AdminReservationManager";
 import AdminCartView from "./AdminCartView";
 import AdminAddToCartModal from "./AdminAddToCartModal";
 import AdminVeterinarianRegister from "./veterinarian/AdminVeterinarianRegister";
+import AdminVeterinarianTable from "./veterinarian/AdminVeterinarianTable";
 import "./AdminDashboard.css";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const AdminDashboard: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
-  const [activeModal, setActiveModal] = useState<null | 'services' | 'products' | 'pets' | 'reservations' | 'reservationManager' | 'addToCart' | 'registerVeterinarian'>(null);
+  const [activeModal, setActiveModal] = useState<
+    | null
+    | "services"
+    | "products"
+    | "pets"
+    | "reservations"
+    | "reservationManager"
+    | "addToCart"
+    | "registerVeterinarian"
+    | "veterinarianTable"
+  >(null);
 
   return (
-    <div className="admin-dashboard-bg">
-      <div className="admin-dashboard-main">
-        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 32px 0 32px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-            <button className="admin-btn" onClick={() => setShowCart((prev) => !prev)}>
-              🛒 Carrito
-            </button>
-          </div>
-          <button className="admin-btn" style={{ background: '#d32f2f' }} onClick={() => window.location.href = '/'}>
-            Cerrar Sesión
-          </button>
-        </header>
-        <div className="admin-dashboard-content">
-          <h1>Panel de Administración</h1>
-          <p style={{color: '#888', marginBottom: 24}}>Selecciona una opción para gestionar servicios o productos.</p>
-          <div className="admin-dashboard-actions">
-            <button className="admin-btn" onClick={() => setActiveModal('services')}>
-              Gestión de Servicios
-            </button>
-            <button className="admin-btn" onClick={() => setActiveModal('products')}>
-              Gestión de Productos
-            </button>
-            <button className="admin-btn" onClick={() => setActiveModal('pets')}>
-              Gestión de Mascotas
-            </button>
-            <button className="admin-btn" onClick={() => setActiveModal('reservations')}>
-              Reservas
-            </button>
-            <button className="admin-btn" onClick={() => setActiveModal('reservationManager')}>
-              Gestión de Reservas (CRUD)
-            </button>
-            <button className="admin-btn" onClick={() => setActiveModal('addToCart')}>
-              Agregar productos o servicios al carrito
-            </button>
-            <button className="admin-btn" onClick={() => setActiveModal('registerVeterinarian')}>
-              Registrar Veterinario
-            </button>
-          </div>
-          {showCart && (
-            <div className="admin-panel-section" style={{ maxWidth: 520, margin: '24px auto 0 auto' }}>
-              <AdminCartView />
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-100">
+      <div className="max-w-5xl mx-auto py-8 px-2">
+        <Card className="mb-6">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-2xl">Panel de Administración</CardTitle>
+            <Button
+              variant="destructive"
+              onClick={() => (window.location.href = "/")}
+            >
+              Cerrar Sesión
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4 mb-4">
+              <Button
+                onClick={() => setShowCart((prev) => !prev)}
+                variant="outline"
+              >
+                🛒 Carrito
+              </Button>
+              <Button onClick={() => setActiveModal("services")}>
+                Gestión de Servicios
+              </Button>
+              <Button onClick={() => setActiveModal("products")}>
+                Gestión de Productos
+              </Button>
+              <Button onClick={() => setActiveModal("pets")}>
+                Gestión de Mascotas
+              </Button>
+              <Button onClick={() => setActiveModal("reservations")}>
+                Reservas
+              </Button>
+              <Button onClick={() => setActiveModal("reservationManager")}>
+                Gestión de Reservas (CRUD)
+              </Button>
+              <Button onClick={() => setActiveModal("addToCart")}>
+                Agregar al Carrito
+              </Button>
+              <Button
+                onClick={() => setActiveModal("registerVeterinarian")}
+                variant="secondary"
+              >
+                Registrar Veterinario
+              </Button>
+              <Button
+                onClick={() => setActiveModal("veterinarianTable")}
+                variant="secondary"
+              >
+                Ver Veterinarios
+              </Button>
             </div>
-          )}
-          {activeModal === 'services' && (
-            <div className="modal-bg"><div className="modal-content"><button className="admin-btn" style={{float:'right'}} onClick={()=>setActiveModal(null)}>&times;</button><AdminServiceManager /></div></div>
-          )}
-          {activeModal === 'products' && (
-            <div className="modal-bg"><div className="modal-content"><button className="admin-btn" style={{float:'right'}} onClick={()=>setActiveModal(null)}>&times;</button><AdminProductManager /></div></div>
-          )}
-          {activeModal === 'pets' && (
-            <div className="modal-bg"><div className="modal-content"><button className="admin-btn" style={{float:'right'}} onClick={()=>setActiveModal(null)}>&times;</button><AdminPetManager /></div></div>
-          )}
-          {activeModal === 'reservations' && (
-            <div className="modal-bg"><div className="modal-content"><button className="admin-btn" style={{float:'right'}} onClick={()=>setActiveModal(null)}>&times;</button><AdminReservationsPanel /></div></div>
-          )}
-          {activeModal === 'reservationManager' && (
-            <div className="modal-bg"><div className="modal-content"><button className="admin-btn" style={{float:'right'}} onClick={()=>setActiveModal(null)}>&times;</button><AdminReservationManager /></div></div>
-          )}
-          {activeModal === 'addToCart' && (
+            <p className="text-muted-foreground mb-4">
+              Selecciona una opción para gestionar servicios, productos,
+              mascotas o reservas.
+            </p>
+            {showCart && (
+              <Card className="mb-4">
+                <CardHeader>
+                  <CardTitle>Carrito</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <AdminCartView />
+                </CardContent>
+              </Card>
+            )}
+          </CardContent>
+        </Card>
+        <Dialog
+          open={activeModal === "services"}
+          onOpenChange={() => setActiveModal(null)}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Gestión de Servicios</DialogTitle>
+            </DialogHeader>
+            <AdminServiceManager />
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={activeModal === "products"}
+          onOpenChange={() => setActiveModal(null)}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Gestión de Productos</DialogTitle>
+            </DialogHeader>
+            <AdminProductManager />
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={activeModal === "pets"}
+          onOpenChange={() => setActiveModal(null)}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Gestión de Mascotas</DialogTitle>
+            </DialogHeader>
+            <AdminPetManager />
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={activeModal === "reservations"}
+          onOpenChange={() => setActiveModal(null)}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Reservas</DialogTitle>
+            </DialogHeader>
+            <AdminReservationsPanel />
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={activeModal === "reservationManager"}
+          onOpenChange={() => setActiveModal(null)}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Gestión de Reservas (CRUD)</DialogTitle>
+            </DialogHeader>
+            <AdminReservationManager />
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={activeModal === "addToCart"}
+          onOpenChange={() => setActiveModal(null)}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                Agregar productos o servicios al carrito
+              </DialogTitle>
+            </DialogHeader>
             <AdminAddToCartModal onClose={() => setActiveModal(null)} />
-          )}
-          {activeModal === 'registerVeterinarian' && (
-            <div className="modal-bg">
-              <div className="modal-content">
-                <button className="admin-btn" style={{float:'right'}} onClick={()=>setActiveModal(null)}>&times;</button>
-                <AdminVeterinarianRegister />
-              </div>
-            </div>
-          )}
-        </div>
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={activeModal === "registerVeterinarian"}
+          onOpenChange={() => setActiveModal(null)}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Registrar Veterinario</DialogTitle>
+            </DialogHeader>
+            <AdminVeterinarianRegister />
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={activeModal === "veterinarianTable"}
+          onOpenChange={() => setActiveModal(null)}
+        >
+          <DialogContent className="max-w-5xl">
+            <DialogHeader>
+              <DialogTitle>Veterinarios Registrados</DialogTitle>
+            </DialogHeader>
+            <AdminVeterinarianTable />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

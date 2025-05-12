@@ -1,7 +1,7 @@
 import { Pet } from "./Pet";
 import { Reservation } from "./Reservation";
 import { CareOrder } from "./CareOrder";
-import { User } from "@/components/Dashboard/Cliente/types/Reservation.types";
+import { User } from "./User";
 
 export interface Veterinarian {
   id: string;
