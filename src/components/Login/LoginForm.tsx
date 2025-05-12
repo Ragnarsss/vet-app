@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLoginVeterinarian } from "./useLoginVeterinarian";
 
 const loginSchema = z.object({
   email: z.string().email("Correo inválido"),
@@ -31,6 +32,7 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const vetAuth = useVeterinarianAuth();
   const { loginUser, loading, error, success } = useLoginUser();
+  const { loginVeterinarian } = useLoginVeterinarian();
   const {
     register,
     handleSubmit,
@@ -46,12 +48,15 @@ const LoginForm: React.FC = () => {
   });
 
   const handleVetLogin = async (data: VetLoginFormInputs) => {
-    await vetAuth.login(data.email, data.password);
-    // Redirige solo si no hay error y hay sesión activa
-    if (!vetAuth.error && vetAuth.veterinarian && vetAuth.authData) {
-      navigate("/veterinarian");
-    }
-  };
+      const response = await loginVeterinarian({ email: data.email, password: data.password }) as { loginVeterinarian?: { data?: { auth_token?: string } } };
+      // La respuesta es { loginVeterinarian: { ... } }
+      const vetData = response?.loginVeterinarian;
+      if (vetData && vetData.data && vetData.data.auth_token) {
+        // Aquí puedes guardar el token y datos del veterinario si lo deseas
+        // Por ejemplo: saveVeterinarianToLocalStorage(vetData, vetData.data.auth_token);
+        navigate("/veterinarian");
+      }
+    };
 
   // Modal y recuperación de contraseña (sin cambios)
   const [isForgotPasswordVisible, setIsForgotPasswordVisible] =
