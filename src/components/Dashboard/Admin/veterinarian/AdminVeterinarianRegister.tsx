@@ -1,99 +1,165 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert } from "@/components/ui/alert";
 import { useAdminVeterinarianMutations } from "./useAdminVeterinarianMutations";
 
+const vetSchema = z.object({
+  name: z.string().min(1, "El nombre es obligatorio"),
+  email: z.string().email("Email inválido"),
+  password: z.string().min(6, "Mínimo 6 caracteres"),
+  phone: z.string().optional(),
+  availability: z.array(z.string()).min(1, "Selecciona al menos un día"),
+});
+
+type VetFormInputs = z.infer<typeof vetSchema>;
+
+const DIAS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+
 const AdminVeterinarianRegister: React.FC = () => {
-  const { createUser, createVeterinarian, loading, error } = useAdminVeterinarianMutations();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-    availability: ""
-  });
+  const { createUser, createVeterinarian, loading, error } =
+    useAdminVeterinarianMutations();
   const [result, setResult] = useState<any>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+    reset,
+  } = useForm<VetFormInputs>({
+    resolver: zodResolver(vetSchema),
+    defaultValues: { availability: [] },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (form: VetFormInputs) => {
     setResult(null);
-    // 1. Crear usuario
     const userRes = await createUser({
       name: form.name,
       email: form.email,
-      password: form.password
+      password: form.password,
     });
     if (!userRes || !userRes.id) {
       setResult({ error: "Error al crear usuario" });
       return;
     }
-    // 2. Crear veterinario con user como string (id)
     const vetInput = {
-      user_id: userRes.id, // <-- SOLO el id
+      user_id: userRes.id,
       phone: form.phone,
-      availability: form.availability
-        ? form.availability.split(",").map((d) => d.trim())
-        : []
+      availability: form.availability,
     };
     const res = await createVeterinarian(vetInput);
     setResult(res);
+    reset();
   };
 
+  const selectedAvailability = watch("availability");
+
   return (
-    <div style={{ maxWidth: 400, margin: "0 auto", background: "#fff", borderRadius: 10, boxShadow: "0 2px 12px #0001", padding: 24 }}>
-      <h2>Registrar Veterinario</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        <label>
-          Nombre:
-          <input name="name" value={form.name} onChange={handleChange} required />
-        </label>
-        <label>
-          Email:
-          <input name="email" type="email" value={form.email} onChange={handleChange} required />
-        </label>
-        <label>
-          Contraseña:
-          <input name="password" type="password" value={form.password} onChange={handleChange} required />
-        </label>
-        <label>
-          Teléfono:
-          <input name="phone" value={form.phone} onChange={handleChange} />
-        </label>
-        <label>
-          Disponibilidad (elige los días):
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
-            {["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"].map((dia) => (
-              <label key={dia} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <input
-                  type="checkbox"
-                  checked={form.availability.split(",").map(d => d.trim()).includes(dia)}
-                  onChange={e => {
-                    const dias = form.availability ? form.availability.split(",").map(d => d.trim()) : [];
-                    let newDias;
-                    if (e.target.checked) {
-                      newDias = [...dias, dia];
-                    } else {
-                      newDias = dias.filter(d => d !== dia);
-                    }
-                    setForm({ ...form, availability: newDias.join(",") });
-                  }}
-                />
-                {dia}
-              </label>
-            ))}
+    <Card className="max-w-md mx-auto mt-8">
+      <CardHeader>
+        <CardTitle>Registrar Veterinario</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <Label htmlFor="name">Nombre</Label>
+            <Input id="name" {...register("name")} disabled={loading} />
+            {errors.name && (
+              <span className="text-xs text-red-500">
+                {errors.name.message}
+              </span>
+            )}
           </div>
-        </label>
-        <button type="submit" disabled={loading} style={{ background: '#1976d2', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 18px', fontWeight: 500 }}>
-          {loading ? "Registrando..." : "Registrar Veterinario"}
-        </button>
-      </form>
-      {error && <div style={{ marginTop: 16, color: 'red' }}>{error}</div>}
-      {result && !error && (
-        <div style={{ marginTop: 16, color: 'green' }}>¡Veterinario registrado!</div>
-      )}
-    </div>
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              {...register("email")}
+              disabled={loading}
+            />
+            {errors.email && (
+              <span className="text-xs text-red-500">
+                {errors.email.message}
+              </span>
+            )}
+          </div>
+          <div>
+            <Label htmlFor="password">Contraseña</Label>
+            <Input
+              id="password"
+              type="password"
+              {...register("password")}
+              disabled={loading}
+            />
+            {errors.password && (
+              <span className="text-xs text-red-500">
+                {errors.password.message}
+              </span>
+            )}
+          </div>
+          <div>
+            <Label htmlFor="phone">Teléfono</Label>
+            <Input id="phone" {...register("phone")} disabled={loading} />
+            {errors.phone && (
+              <span className="text-xs text-red-500">
+                {errors.phone.message}
+              </span>
+            )}
+          </div>
+          <div>
+            <Label>Disponibilidad (elige los días)</Label>
+            <div className="flex flex-wrap gap-3 mt-2">
+              {DIAS.map((dia) => (
+                <label key={dia} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    value={dia}
+                    checked={selectedAvailability.includes(dia)}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setValue(
+                        "availability",
+                        checked
+                          ? [...selectedAvailability, dia]
+                          : selectedAvailability.filter((d) => d !== dia)
+                      );
+                    }}
+                    disabled={loading}
+                  />
+                  {dia}
+                </label>
+              ))}
+            </div>
+            {errors.availability && (
+              <span className="text-xs text-red-500">
+                {errors.availability.message as string}
+              </span>
+            )}
+          </div>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Registrando..." : "Registrar Veterinario"}
+          </Button>
+          {error && (
+            <Alert variant="destructive" className="mt-2">
+              {error}
+            </Alert>
+          )}
+          {result && !error && (
+            <Alert variant="success" className="mt-2">
+              ¡Veterinario registrado!
+            </Alert>
+          )}
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 

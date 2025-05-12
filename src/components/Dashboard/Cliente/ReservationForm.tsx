@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateReservation } from "./hooks/useCreateReservation";
 import { useClientPets } from "./hooks/useClientPets";
 import { useVeterinarians } from "./hooks/useVeterinarians";
+import { useService } from "./hooks/useService";
+import { useServiceSelection } from "./hooks/useServiceSelection";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +37,9 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
   const clientId = localStorage.getItem("cliente_id") || "";
   const { pets, loading: petsLoading } = useClientPets();
   const { veterinarians, loading: vetsLoading } = useVeterinarians();
+  const { services, loading: servicesLoading } = useService();
+  const { selectedServiceIds, selectedServices, toggleService, totalPrice } =
+    useServiceSelection(services);
   const { createReservation, loading, error, success } = useCreateReservation();
   const {
     register,
@@ -68,6 +73,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         customer_id: clientId,
         veterinarian_id: form.veterinarian_id,
         status: "pending",
+        service_ids: selectedServiceIds,
       });
       onSuccess("¡Reserva agendada con éxito!");
       reset();
@@ -175,6 +181,59 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
             </span>
           )}
         </div>
+      </div>
+      <div>
+        <Label>Servicios</Label>
+        {servicesLoading ? (
+          <span className="text-muted-foreground text-xs">
+            Cargando servicios...
+          </span>
+        ) : services.length === 0 ? (
+          <span className="text-amber-600 text-xs">
+            No hay servicios disponibles.
+          </span>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {services.map((service) => (
+              <label
+                key={service.id}
+                className="flex items-center gap-2 p-2 rounded-lg border hover:border-blue-400 cursor-pointer transition"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedServiceIds.includes(service.id!)}
+                  onChange={() => toggleService(service.id!)}
+                  className="accent-blue-600"
+                  disabled={loading}
+                />
+                <span className="font-medium">{service.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  ${service.price}
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
+        {selectedServices.length > 0 && (
+          <div className="mt-3 bg-blue-50 rounded-lg p-3">
+            <div className="font-semibold mb-1 text-blue-800">
+              Servicios seleccionados:
+            </div>
+            <ul className="text-sm space-y-1">
+              {selectedServices.map((s) => (
+                <li key={s.id} className="flex justify-between">
+                  <span>{s.name}</span>
+                  <span className="text-blue-700 font-semibold">
+                    ${s.price}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-2 font-bold text-right text-blue-900">
+              Total servicios: ${totalPrice}
+            </div>
+          </div>
+        )}
       </div>
       <div>
         <Label htmlFor="notes">Observaciones</Label>
