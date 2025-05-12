@@ -3,7 +3,7 @@ import "./VeterinarianDashboard.css";
 import VeterinarianReservationsTable from "./VeterinarianReservationsTable";
 import { useVeterinarianReservations } from "./useVeterinarianReservations";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCareOrders } from "./useCareOrders";
+import { useCareOrders, CareOrder } from "./useCareOrders";
 
 const VeterinarianDashboard: React.FC = () => {
   const { reservations, loading, error, updateReservationStatus } =
@@ -75,15 +75,13 @@ const VeterinarianDashboard: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {careOrders.map((order: any) => (
+                  {careOrders.map((order: CareOrder) => (
                     <tr key={order.id}>
                       <td>{order.id}</td>
                       <td>{order.reservation?.date_time}</td>
                       <td>${order.total}</td>
                       <td>{order.customer?.user?.name}</td>
-                      <td>
-                        {order.products?.map((p: any) => p.name).join(", ")}
-                      </td>
+                      <td>{order.products?.map((p) => p.name).join(", ")}</td>
                     </tr>
                   ))}
                 </tbody>
