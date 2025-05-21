@@ -3,16 +3,19 @@ import "./VeterinarianDashboard.css";
 import VeterinarianReservationsTable from "./VeterinarianReservationsTable";
 import { useVeterinarianReservations } from "./useVeterinarianReservations";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCareOrders, CareOrder } from "./useCareOrders";
+//import { useCareOrders, CareOrder } from "./useCareOrders";
 
 const VeterinarianDashboard: React.FC = () => {
   const { reservations, loading, error, updateReservationStatus } =
     useVeterinarianReservations();
+
+    /*
   const {
     careOrders,
     loading: loadingCareOrders,
     error: errorCareOrders,
   } = useCareOrders();
+  */
 
   // Filtrar reservas pendientes e historial
   const pendingReservations = reservations.filter(
@@ -55,6 +58,7 @@ const VeterinarianDashboard: React.FC = () => {
             />
           </CardContent>
         </Card>
+        {/*
         <Card>
           <CardHeader>
             <CardTitle>Care Orders Cerradas</CardTitle>
@@ -89,6 +93,7 @@ const VeterinarianDashboard: React.FC = () => {
             )}
           </CardContent>
         </Card>
+        */}
       </div>
     </div>
   );

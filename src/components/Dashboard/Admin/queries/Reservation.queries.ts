@@ -33,7 +33,7 @@ export const ALL_RESERVATIONS_QUERY = `
 `;
 
 export const RESERVATION_BY_ID_QUERY = `
-  query ReservationById($id: ID!) {
+  query ReservationById($id: String!) {
     reservation(id: $id) {
       id
       date_time
@@ -72,7 +72,7 @@ export const RESERVATION_BY_ID_QUERY = `
 `;
 
 export const RESERVATIONS_BY_CUSTOMER_QUERY = `
-  query ReservationsByCustomer($customer_id: ID!) {
+  query ReservationsByCustomer($customer_id: String!) {
     reservationsByCustomer(customer_id: $customer_id) {
       id
       date_time
@@ -91,7 +91,7 @@ export const RESERVATIONS_BY_CUSTOMER_QUERY = `
 `;
 
 export const RESERVATIONS_BY_VETERINARIAN_QUERY = `
-  query ReservationsByVeterinarian($veterinarian_id: ID!) {
+  query ReservationsByVeterinarian($veterinarian_id: String!) {
     reservationsByVeterinarian(veterinarian_id: $veterinarian_id) {
       id
       date_time

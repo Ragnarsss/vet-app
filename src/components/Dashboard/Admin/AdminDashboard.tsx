@@ -4,8 +4,8 @@ import AdminProductManager from "./product/AdminProductManager";
 import AdminPetManager from "./pet/AdminPetManager";
 import AdminReservationsPanel from "./AdminReservationsPanel";
 import AdminReservationManager from "./AdminReservationManager";
-import AdminCartView from "./AdminCartView";
-import AdminAddToCartModal from "./AdminAddToCartModal";
+//import AdminCartView from "./AdminCartView";
+//import AdminAddToCartModal from "./AdminAddToCartModal";
 import AdminVeterinarianRegister from "./veterinarian/AdminVeterinarianRegister";
 import AdminVeterinarianTable from "./veterinarian/AdminVeterinarianTable";
 import "./AdminDashboard.css";
@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 
 const AdminDashboard: React.FC = () => {
-  const [showCart, setShowCart] = useState(false);
+  //const [showCart, setShowCart] = useState(false);
   const [activeModal, setActiveModal] = useState<
     | null
     | "services"
@@ -27,7 +27,6 @@ const AdminDashboard: React.FC = () => {
     | "pets"
     | "reservations"
     | "reservationManager"
-    | "addToCart"
     | "registerVeterinarian"
     | "veterinarianTable"
   >(null);
@@ -47,12 +46,15 @@ const AdminDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-4 mb-4">
+              {/* 
               <Button
                 onClick={() => setShowCart((prev) => !prev)}
                 variant="outline"
               >
                 🛒 Carrito
-              </Button>
+              </Button>              
+              */}
+
               <Button onClick={() => setActiveModal("services")}>
                 Gestión de Servicios
               </Button>
@@ -68,9 +70,12 @@ const AdminDashboard: React.FC = () => {
               <Button onClick={() => setActiveModal("reservationManager")}>
                 Gestión de Reservas (CRUD)
               </Button>
+              {/* 
               <Button onClick={() => setActiveModal("addToCart")}>
                 Agregar al Carrito
-              </Button>
+              </Button>              
+              */}
+
               <Button
                 onClick={() => setActiveModal("registerVeterinarian")}
                 variant="secondary"
@@ -88,6 +93,7 @@ const AdminDashboard: React.FC = () => {
               Selecciona una opción para gestionar servicios, productos,
               mascotas o reservas.
             </p>
+            {/*
             {showCart && (
               <Card className="mb-4">
                 <CardHeader>
@@ -97,7 +103,9 @@ const AdminDashboard: React.FC = () => {
                   <AdminCartView />
                 </CardContent>
               </Card>
-            )}
+            )}             
+              */}
+
           </CardContent>
         </Card>
         <Dialog
@@ -155,6 +163,7 @@ const AdminDashboard: React.FC = () => {
             <AdminReservationManager />
           </DialogContent>
         </Dialog>
+          {/*
         <Dialog
           open={activeModal === "addToCart"}
           onOpenChange={() => setActiveModal(null)}
@@ -168,6 +177,8 @@ const AdminDashboard: React.FC = () => {
             <AdminAddToCartModal onClose={() => setActiveModal(null)} />
           </DialogContent>
         </Dialog>
+          */}
+
         <Dialog
           open={activeModal === "registerVeterinarian"}
           onOpenChange={() => setActiveModal(null)}

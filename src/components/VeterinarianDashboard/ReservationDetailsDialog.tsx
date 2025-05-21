@@ -61,8 +61,8 @@ const ReservationDetailsDialog: React.FC<ReservationDetailsDialogProps> = ({
     setLoading(true);
     setError("");
     try {
-      await updateReservationStatus(reservation.id, "completada");
-      await completeOrder(reservation.id, [], selectedServices);
+      await updateReservationStatus(String(reservation.id), "completed");
+      await completeOrder(String(reservation.id), [], selectedServices);
       setShowCareOrderDialog(false);
       onOpenChange(false);
     } catch {
@@ -84,11 +84,11 @@ const ReservationDetailsDialog: React.FC<ReservationDetailsDialogProps> = ({
               <b>Fecha/Hora:</b> {reservation.date_time}
             </div>
             <div>
-              <b>Mascota:</b> {reservation.pet_name || reservation.pet?.name}
+              <b>Mascota:</b> {reservation.pet_name}
             </div>
             <div>
               <b>Cliente:</b>{" "}
-              {reservation.customer_id || reservation.customer?.user?.name}
+              {reservation.customer_id}
             </div>
             <div>
               <b>Motivo:</b> {reservation.reason}

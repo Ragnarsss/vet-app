@@ -30,7 +30,7 @@ export const UPDATE_RESERVATION_STATUS = `
 `;
 
 export const COMPLETE_ORDER = `
-  mutation CompleteOrder($reservationId: String!, $products: [ProductOrderInput!], $service_ids: [ID!]) {
+  mutation CompleteOrder($reservationId: String!, $products: [ProductOrderInput!], $service_ids: [String!]) {
     completeOrder(reservationId: $reservationId, products: $products, service_ids: $service_ids) {
       id
       status
